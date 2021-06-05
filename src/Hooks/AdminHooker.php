@@ -13,6 +13,8 @@ class AdminHooker {
 	}
 
 	public static function setup_website_options() {
+
+		/** =========== Settings ================= */
 		$settings_fields_builder = new SettingsFieldsBuilder(
 			'options-general.php',
 			'Simple WP Maintenance Options'

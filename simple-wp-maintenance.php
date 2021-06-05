@@ -16,6 +16,7 @@ require_once( 'vendor/autoload.php' );
 
 // use ScorpioTek\WPUtil\Logging\StreamLogger;
 use ScorpioTek\SimpleWPMaintenance\Hooks\AdminHooker;
+use ScorpioTek\SimpleWPMaintenance\Hooks\FrontEndHooker;
 
 // if ( ! class_exists( StreamLogger::class ) ) {
 // 	try {
@@ -33,4 +34,8 @@ use ScorpioTek\SimpleWPMaintenance\Hooks\AdminHooker;
 // 	}
 // 	/** Sets up all the required hooks for the plugin. */
 // }
-AdminHooker::init();
+if ( \is_admin() ) {
+	AdminHooker::init();
+} else {
+	FrontEndHooker::init();
+}
