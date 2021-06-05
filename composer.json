@@ -1,0 +1,37 @@
+{
+	"name": "scorpiotek/simple-wp-maintenance",
+	"description": "Easily set an under construction page in WP",
+	"type": "library",
+	"require": {
+		"php": "^7.3.22",
+		"scorpiotek/scorpiotek-wordpress-utilities": "dev-develop"
+	},
+	"require-dev": {
+		"codeception/lib-innerbrowser": "^1.0",
+		"codeception/module-asserts": "^1.1",
+		"codeception/module-cli": "^1.0",
+		"codeception/module-db": "^1.0",
+		"codeception/module-filesystem": "^1.0",
+		"codeception/module-phpbrowser": "^1.0",
+		"codeception/module-rest": "^1.2",
+		"codeception/module-webdriver": "^1.0",
+		"codeception/util-universalframework": "^1.0"
+	},    
+	"authors": [
+		{
+			"name": "Christian Saborio",
+			"email": "csaborio@scorpiotek.com"
+		}
+	],
+	"repositories": [
+		{
+		  "type": "vcs",
+		  "url": "https://csaborio001@bitbucket.org/csaborio001/scorpiotek-wordpress-utilities.git"
+		}
+	],  
+	"autoload": {
+		"psr-4": {
+			"ScorpioTek\\SimpleWPMaintenance\\": "src/"
+		}
+	}
+}
