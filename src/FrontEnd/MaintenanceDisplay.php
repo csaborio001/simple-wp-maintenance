@@ -20,21 +20,25 @@ class MaintenanceDisplay {
 	private static function render_construction_page() {
 		header( $_SERVER["SERVER_PROTOCOL"] . ' 503 Service Temporarily Unavailable', true, 503 );
 		header( 'Content-Type: text/html; charset=utf-8' );
-		$background_image = 'https://static.cdn.responsys.net/i5/responsysimages/content/shutters/pref_background_confirmation2.jpg';
-		$font_uri         = \plugin_dir_url( dirname( __FILE__, 2) ) . 'dist/fonts/OPTIFranklinGothic-Medium.otf';
+		$logo                            = \wp_get_attachment_url( \get_option( 'options_image_logo' ) );
+		$font_uri                        = \plugin_dir_url( dirname( __FILE__, 2) ) . 'dist/fonts/OPTIFranklinGothic-Medium.otf';
+		$header_text                     = \get_option( 'options_text_header_text' );
+		$message                         = \get_option( 'options_wysiwyg_message' );
+		$background_css                  = self::get_background_css();
+		$text_container_background_color = \get_option( 'options_colorpicker_text_container_colour' );
+		$text_container_opacity          = \get_option( 'options_range_text_container_opacity' );
+		if ( \is_numeric( $text_container_opacity ) ) {
+			$text_container_background_color = $text_container_background_color . self::get_hex_from_decimal( 2.55 * $text_container_opacity );
+		}
 		?>
 		<link rel="preconnect" href="https://fonts.gstatic.com"> 
-		<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500&display=swap" rel="stylesheet">
 		<style>
 			@font-face {
 				font-family: "Franklin Gothic Medium";
 				src: url(<?php echo $font_uri; ?>);
 			}
 			body {
-				background-color: red;
-				background: url( <?php echo $background_image; ?>) no-repeat center center fixed;
-				background-size: cover;
+				<?php echo $background_css; ?>
 			}
 			.content {
 				position: absolute;
@@ -42,10 +46,10 @@ class MaintenanceDisplay {
 				max-width: 90%;
 				left: 50%;
 				top: 50%;
-				background: rgba(51,51,51,0.7);
+				background: <?php echo $text_container_background_color; ?>;
 				text-align: center;
 				color: white;
-				font-family: 'Roboto', sans-serif;
+				width: 300px;
 			}
 			.inner {
 				padding: 30px;
@@ -61,8 +65,9 @@ class MaintenanceDisplay {
 			h2 {
 				line-height: 34px !important;
 				color: #ffffff;
+				font-size: 30px;
 			}
-			logo {
+			.logo {
 				margin-bottom: 20px;
 			}
 			h4 {
@@ -73,6 +78,7 @@ class MaintenanceDisplay {
 				margin-inline-end: 0px;
 				font-size: 20px;
 				line-height: 24px;
+				font-family: "Helvetica Neue",Helvetica;
 			}
 			.inner span {
 				display: block;
@@ -81,7 +87,11 @@ class MaintenanceDisplay {
 			.inner span a img {
 				width: 41px;
 				height: 41px;
-			}			
+			}
+			span.social-media img {
+				padding: 0 5px;
+			}
+
 		</style>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
@@ -101,20 +111,71 @@ class MaintenanceDisplay {
 		<div class="under-construction">
 			<div class="content">
 				<div class="inner">
-					<img src="https://bigstock-public.s3.amazonaws.com/crm-team/logo_new.png" />
-					<h2>Under Construction!!!</h2>
-					<h4>We might not be sending updates to your inbox, but we'd love to stay in touch. Connect with us!</h4>
-					<span>
-						<a href="https://www.facebook.com/Shutterstock"><img src="https://static.cdn.responsys.net/i5/responsysimages/shutters/contentlibrary/email_preference_center_2014_q3/img/facebook.png" alt="facebook" title="facebook"></a>
-						<a href="https://twitter.com/Shutterstock"><img src="https://static.cdn.responsys.net/i5/responsysimages/shutters/contentlibrary/email_preference_center_2014_q3/img/twitter.png" alt="twitter" title="twitter"></a>
-						<a href="https://plus.google.com/+shutterstock/posts"><img src="https://static.cdn.responsys.net/i5/responsysimages/shutters/contentlibrary/email_preference_center_2014_q3/img/google.png" alt="google+" title="google+"></a>
-						<a href="http://instagram.com/shutterstock"><img src="https://static.cdn.responsys.net/i5/responsysimages/shutters/contentlibrary/email_preference_center_2014_q3/img/instagram.png" alt="instagram" title="instagram"></a>
-						<a href="http://www.shutterstock.com/blog/"><img src="https://static.cdn.responsys.net/i5/responsysimages/shutters/contentlibrary/email_preference_center_2014_q3/img/blog.png" alt="blog" title="blog"></a>
+					<div class="logo">
+						<img src="<?php echo $logo; ?>" />
+					</div>
+					<h2><?php echo $header_text; ?></h2>
+					<h4><?php echo $message; ?></h4>
+					<span class="social-media">
+					<?php
+						$repeater_size = \get_option( 'options_repeater_social_media' );
+						$image_folder  = \plugin_dir_url( dirname( __FILE__, 2 ) ) . 'dist/images/';
+
+						for( $i = 0; $i < $repeater_size; $i++ ) {
+							$kind = \get_option( "options_repeater_social_media_{$i}_social_media_selection" );
+							$link = \get_option( "options_repeater_social_media_{$i}_social_media_link" );
+							echo( "<a href=\"${link}\"><img src=\"{$image_folder}/{$kind}.png\" alt=\"{$kind}\" title=\"{$kind}\"></a>" );
+						}
+					?>
 					</span>
 				</div>
 
 			</div>
 		</div>
 	<?php
+	}
+
+	private static function get_background_css() {
+		$background_image =  wp_get_attachment_url( \get_option( 'options_image_background_image') );
+		$background_color = \get_option( 'options_colorpicker_webpage_background_color' );
+		if ( ! empty( $background_image ) ) {
+			return "background: url( ${background_image}) no-repeat center center fixed;\n
+			background-size:cover;";
+		} elseif ( ! empty( $background_color) ) {
+			return "background-color: ${background_color}";
+		}
+		else return '';
+	}
+
+	private static function get_hex_from_decimal( $number ) {
+		$hex_table = array(
+			0 => '0',
+			1 => '1',
+			2 => '2',
+			3 => '3',
+			4 => '4',
+			5 => '5',
+			6 => '6',
+			7 => '7',
+			8 => '8',
+			9 => '9',
+			10 => 'A',
+			11 => 'B',
+			12 => 'C',
+			13 => 'D',
+			14 => 'E',
+			15 => 'F',
+		);
+		if ( $number >= 0 && $number <= 15 ) {
+			return $hex_table[$number];
+		}
+
+		while ( $number >= 16 ) {
+			$result    = intval( $number / 16 ); // No remainder.
+			$remainder = $number % 16;
+			// echo ("Result: {$result} Remainder: {$remainder} <br/>");
+			$number = $result;
+			return self::get_hex_from_decimal( $result ) . $hex_table[$remainder];
+		}
 	}
 }
