@@ -10,7 +10,7 @@ class MaintenanceDisplay {
 		global $pagenow;
 		// die($pagenow);
 		$display_maintenance = \get_field( 'truefalse_maintenance_mode_active', 'options' );
-		if ( '0' === $display_maintenance || 'wp-login.php' === $pagenow  || current_user_can( 'manage_options' ) ) {
+		if ( '0' === $display_maintenance || 'wp-login.php' === $pagenow  || current_user_can( 'manage_options' ) || WP_CLI ) {
 			return;
 		}
 		self::render_construction_page();
