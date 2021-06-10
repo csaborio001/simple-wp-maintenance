@@ -7,6 +7,7 @@ namespace ScorpioTek\SimpleWPMaintenance\FrontEnd;
 
 class MaintenanceDisplay {
 	public static function display_maintenance() {
+		defined( 'WP_CLI' ) or define('WP_CLI', false );
 		global $pagenow;
 		// die($pagenow);
 		$display_maintenance = \get_field( 'truefalse_maintenance_mode_active', 'options' );
